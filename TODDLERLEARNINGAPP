@@ -1,0 +1,691 @@
+Alphabet.java
+
+package com.example.kids;
+
+import java.util.Locale;
+
+
+
+
+
+import android.os.Bundle;
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.graphics.Typeface;
+import android.speech.tts.TextToSpeech;
+import android.speech.tts.TextToSpeech.OnInitListener;
+import android.view.Menu;
+import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
+
+public class Alphabets extends Activity  implements OnInitListener {
+	int id,pl=0;
+	int d[]={R.drawable.a,R.drawable.b,R.drawable.c,R.drawable.d,R.drawable.e,R.drawable.f,R.drawable.g,R.drawable.h,R.drawable.i,R.drawable.j,R.drawable.k,R.drawable.l,R.drawable.m,R.drawable.n,R.drawable.o,R.drawable.p,R.drawable.q,R.drawable.r,R.drawable.s,R.drawable.t,R.drawable.u,R.drawable.v,R.drawable.w,R.drawable.x,R.drawable.y,R.drawable.z};
+	String name[]={"a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"};
+	String for1[]={"apple","bird","cat","duck","elephant","frog","goat","horse","igloo","jug","kite","leaf","monkey","nest","octopus","pumpkin","queen","rabbit","skunk","turtle","umbrella","valentine","watermelon","x-ray","yarn","zebra"};
+	ImageView im;
+	Animation a1=null;
+	TextToSpeech tts;
+	EditText ed;
+	    @Override
+	    protected void onCreate(Bundle savedInstanceState) {
+	        super.onCreate(savedInstanceState);
+	        setContentView(R.layout.activity_alphabets);
+	        tts=new TextToSpeech(this,this);
+	        Toast.makeText(this, "Identify the alphabet given in picture", Toast.LENGTH_LONG).show();
+	        Typeface tf=Typeface.createFromAsset(getAssets(), "fonts/snap.TTF");
+	        TextView tx1=(TextView)findViewById(R.id.textView2);
+		       tx1.setTypeface(tf);
+	      }
+
+
+	   
+	    public void speak(View v)
+	    {ed=(EditText)findViewById(R.id.editText1);
+		String name1=(ed.getText()).toString();
+		char ch;
+		name1=name1.trim();
+		a1=AnimationUtils.loadAnimation(this, R.anim.scfade);
+		if(name[pl].equals(name1))
+		{
+			
+			tts.speak(name1+" for "+for1[pl], TextToSpeech.QUEUE_FLUSH, null);
+			pl++;
+			if(pl==26)
+			{	
+			pl=0;
+			 AlertDialog.Builder ad=new AlertDialog.Builder(Alphabets.this);
+         	ad.setTitle("congratulations");
+         	ad.setIcon(R.drawable.photo);
+         	ad.setMessage("You have learned all the alphabets");
+			}
+			   im=(ImageView)findViewById(R.id.imageView1);
+			   im.setAnimation(a1);
+			im.setImageResource(d[pl]);
+			ed.setText("");
+			
+	    }
+		else if(name1.equals(""))
+		{Toast.makeText(this, "No alphabet entered", Toast.LENGTH_LONG).show();
+			tts.speak("No alphabet entered", TextToSpeech.QUEUE_FLUSH, null);
+		}
+		else
+		{
+			Toast.makeText(this, "Incorrect", Toast.LENGTH_LONG).show();
+			tts.speak("Incorrect", TextToSpeech.QUEUE_FLUSH, null);	
+		}
+	    
+	}
+	   
+
+
+		@Override
+		public void onInit(int status) {
+			// TODO Auto-generated method stub
+			if(status==TextToSpeech.LANG_MISSING_DATA||status==TextToSpeech.LANG_NOT_SUPPORTED)
+			{
+				(Toast.makeText(this,"invalid", 3000)).show();	
+			}
+			else 
+			{
+				tts.setLanguage(Locale.US);
+			}
+		}
+		@Override
+		protected void onDestroy()
+		{
+			super.onDestroy();
+			if(tts!=null)
+			{tts.stop();
+			tts.shutdown();
+			}
+		}
+}
+		Front.java
+		
+		package com.example.kids;
+
+import android.os.Bundle;
+import android.app.Activity;
+import android.content.Intent;
+import android.database.Cursor;
+import android.graphics.Typeface;
+import android.view.Menu;
+import android.view.View;
+import android.view.Window;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+public class Front extends Activity {
+	TextView tx4=null;
+	String name;
+ImageView iv=null,iv2;
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        setContentView(R.layout.activity_front);
+		Intent i=getIntent();
+		name=i.getStringExtra("name");
+		 Animation a1=AnimationUtils.loadAnimation(this, R.anim.bee);
+		 iv=(ImageView)findViewById(R.id.imageView1);
+		 iv.setAnimation(a1);
+		 Animation a2=AnimationUtils.loadAnimation(this, R.anim.bee2);
+		 iv2=(ImageView)findViewById(R.id.imageView3);
+		 iv2.setAnimation(a2);
+		Typeface tf=Typeface.createFromAsset(getAssets(), "fonts/snap.TTF");
+	       TextView tx=(TextView)findViewById(R.id.textView1);
+	       tx.setTypeface(tf);
+	       
+	       TextView tx2=(TextView)findViewById(R.id.textView2);
+	       tx2.setTypeface(tf);
+	     //  TextView tx3=(TextView)findViewById(R.id.textView3);
+	     //  tx3.setTypeface(tf);
+	       TextView tx4=(TextView)findViewById(R.id.textView4);
+	       tx4.setText("Welcome "+name);
+	     tx4.setTypeface(tf);
+	      
+	}
+
+
+public void story(View v)
+{
+	Intent i=new Intent(this,Story.class);
+	startActivity(i);
+	
+}
+public void poem(View v)
+{
+	Intent i=new Intent(this,Poem.class);
+	startActivity(i);
+	
+}
+public void alphabets(View v)
+{
+	Intent i=new Intent(this,Alphabets.class);
+	startActivity(i);
+	
+}
+
+}
+
+Login.java
+
+package com.example.kids;
+
+import android.os.Bundle;
+import android.app.Activity;
+import android.content.Intent;
+import android.graphics.Typeface;
+import android.view.Menu;
+import android.view.View;
+import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
+
+public class Login extends Activity {
+DataBaseManager dm;
+EditText ed=null;
+String name;
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_login);
+		dm=new DataBaseManager(this);
+		dm.openDb();
+		Typeface tf=Typeface.createFromAsset(getAssets(), "fonts/snap.TTF");
+		TextView tx=(TextView)findViewById(R.id.textView1);
+	       tx.setTypeface(tf);
+	       TextView tx1=(TextView)findViewById(R.id.textView2);
+	       tx1.setTypeface(tf);
+	}
+
+	public void submit(View v)
+	{ed=(EditText)findViewById(R.id.editText1);
+	name=ed.getText().toString();
+	name=name.trim();
+	
+	if(name.equals(""))
+		Toast.makeText(this, "Please enter name",Toast.LENGTH_LONG).show();
+	else
+	{
+		dm.insertData(name);
+		Toast.makeText(this, "Thanks for Registration",Toast.LENGTH_LONG).show();
+		Intent i=new Intent(this,Front.class);
+		i.putExtra("name", name);
+	
+		startActivity(i);
+		}}
+}
+
+Play.java
+
+package com.example.kids;
+
+
+
+import android.media.MediaPlayer;
+import android.os.Bundle;
+import android.app.Activity;
+import android.content.Intent;
+import android.content.res.Resources;
+import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
+import android.view.Menu;
+import android.view.View;
+import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+public class Play extends Activity {
+int poems[]={R.raw.twinkle,R.raw.jackandjill,R.raw.raingoaway};
+String[] name={ "Twinkle Twinkle Little Star","Jack and Jill","Rain Rain Go Away"};
+int[] image ={R.drawable.twinklestar,R.drawable.jacknjill,R.drawable.rain,R.drawable.baba,R.drawable.humptydumpty};
+MediaPlayer mp=null;
+ImageView ib=null,timage=null;
+TextView tx;
+int alternate;
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_play);
+		Intent i=getIntent();
+		int pos=i.getIntExtra("p", 0);
+		 mp=MediaPlayer.create(this, poems[pos]);
+	        mp.start();
+	        tx=(TextView)findViewById(R.id.textView3);
+	        tx.setText(name[pos]);
+			Typeface tf=Typeface.createFromAsset(getAssets(), "fonts/snap.TTF");
+	        TextView tx1=(TextView)findViewById(R.id.textView2);
+		       tx1.setTypeface(tf);
+	        timage=(ImageView)findViewById(R.id.imageView1);
+	        timage.setImageResource(image[pos]);
+	        alternate=0;
+	}
+
+	public void pauseplay(View v)
+	{
+		ib=((ImageButton)findViewById(R.id.imageButton1));
+			
+		if(alternate==0)
+		{mp.pause();
+		ib.setImageResource(R.drawable.play);
+		alternate=1;
+		}
+		else
+		{
+			mp.start();
+			ib.setImageResource(R.drawable.pause);
+			alternate=0;
+		}
+	}
+	@Override
+	protected void onDestroy()
+	{super.onDestroy();
+		mp.stop();
+		
+	}
+}
+
+Poem.java
+
+package com.example.kids;
+
+import com.example.kids.ReadStory.DataAdapter;
+
+import android.os.Bundle;
+import android.app.Activity;
+import android.content.Intent;
+import android.graphics.Typeface;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.BaseAdapter;
+import android.widget.ImageView;
+import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.AdapterView.OnItemClickListener;
+
+public class Poem extends Activity {
+	String[] name={ "Twinkle Twinkle Little Star","Jack and Jill","Rain Rain Go Away"};
+	int[] poems ={R.drawable.twinklestar,R.drawable.jacknjill,R.drawable.rain};
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_poem);
+		Typeface tf=Typeface.createFromAsset(getAssets(), "fonts/snap.TTF");
+	
+	       
+	       TextView tx2=(TextView)findViewById(R.id.textView2);
+	       tx2.setTypeface(tf);
+	      
+		 ListView listview =(ListView)findViewById(R.id.listView1);
+	
+	        listview.setAdapter(new DataAdapter());
+	        listview.setOnItemClickListener(new OnItemClickListener() {
+		          
+          public void onItemClick(AdapterView<?>arg0,View arg1,int arg2,long arg3){
+          	
+        Intent i=new Intent(Poem.this,Play.class);
+         
+         
+	               // String item = ((TextView)arg1).getText().toString();
+	               //Toast.makeText(WatchStory.this, ""+arg2, Toast.LENGTH_LONG).show();
+	             i.putExtra("p",arg2);
+	              startActivity(i);
+	                
+	            
+          } });
+	}
+
+	class DataAdapter extends BaseAdapter{
+
+		@Override
+		public int getCount() {
+			// TODO Auto-generated method stub
+			return name.length;
+		}
+
+		@Override
+		public Object getItem(int arg0) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public long getItemId(int arg0) {
+			// TODO Auto-generated method stub
+			return 0;
+		}
+
+		@Override
+		public View getView(int position, View childview, ViewGroup arg2) {
+			// TODO Auto-generated method stub
+			LayoutInflater inflater=(LayoutInflater)getSystemService(LAYOUT_INFLATER_SERVICE);
+			childview=inflater.inflate(R.layout.mylayout, null);
+			TextView tv=(TextView)childview.findViewById(R.id.textView1);
+			ImageView iv=(ImageView)childview.findViewById(R.id.imageView1);
+			tv.setText(name[position]);
+			iv.setImageResource(poems[position]);
+			
+			
+			return childview;
+		}
+		
+	}
+	  
+	    
+	}
+
+Read.java
+
+package com.example.kids;
+
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.Scanner;
+
+
+
+import android.os.Bundle;
+import android.app.Activity;
+import android.content.Intent;
+import android.view.Menu;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+public class Read extends Activity {
+	String[] name={ "The lonely dianosour","The clever rabbit and the witch","The Promise","King Alfread and the Begger"};
+int story[]={R.raw.story,R.raw.story2,R.raw.story3,R.raw.story4};
+int image[]={R.drawable.dianasour,R.drawable.witch_and_rabbit,R.drawable.thepromise,R.drawable.the_king};
+String word="";
+TextView tx,tx2;
+int k=0;
+String ch;
+
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_read);
+		Intent i=getIntent();
+		int pos=i.getIntExtra("p", 0);
+		
+	tx=(TextView)findViewById(R.id.textView1);
+	Scanner s=new Scanner(getResources().openRawResource(story[pos]));
+    
+	while(s.hasNext())
+		{ch=s.next();
+    	word=word+" "+ch;
+    	k=k+1;
+    	if((ch.lastIndexOf(".")>0)&&(k>40))
+    	{k=0;
+	word=word+"\n\n";
+    	}
+    }
+    s.close();
+    TextView tx=(TextView)findViewById(R.id.textView1);
+    tx.setText(word);
+    TextView tx2=(TextView)findViewById(R.id.textView2);
+    tx2.setText(name[pos]);
+    ImageView iv=(ImageView)findViewById(R.id.imageView1);
+    iv.setImageResource(image[pos]);
+	}
+}
+
+ReadStory.java
+
+package com.example.kids;
+
+
+
+import android.os.Bundle;
+import android.app.Activity;
+import android.content.Intent;
+import android.graphics.Typeface;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.BaseAdapter;
+import android.widget.ImageView;
+import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.AdapterView.OnItemClickListener;
+
+public class ReadStory extends Activity {
+	String[] name={ "The lonely dianosour","The clever rabbit and the witch","The Promise","King Alfread and the Begger"};
+	int[] images ={R.drawable.dianasour,R.drawable.witch_and_rabbit,R.drawable.thepromise,R.drawable.the_king};
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_read_story);
+		Typeface tf=Typeface.createFromAsset(getAssets(), "fonts/snap.TTF");
+	
+	       
+	       TextView tx2=(TextView)findViewById(R.id.textView2);
+	       tx2.setTypeface(tf);
+	      
+		 ListView listview =(ListView)findViewById(R.id.listView1);
+	
+	        listview.setAdapter(new DataAdapter());
+	        listview.setOnItemClickListener(new OnItemClickListener() {
+		          
+             public void onItemClick(AdapterView<?>arg0,View arg1,int arg2,long arg3){
+             	
+           Intent i=new Intent(ReadStory.this,Read.class);
+            
+            
+	               // String item = ((TextView)arg1).getText().toString();
+	               //Toast.makeText(WatchStory.this, ""+arg2, Toast.LENGTH_LONG).show();
+	             i.putExtra("p",arg2);
+	              startActivity(i);
+	                
+	            
+             } });
+	}
+
+	class DataAdapter extends BaseAdapter{
+
+		@Override
+		public int getCount() {
+			// TODO Auto-generated method stub
+			return name.length;
+		}
+
+		@Override
+		public Object getItem(int arg0) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public long getItemId(int arg0) {
+			// TODO Auto-generated method stub
+			return 0;
+		}
+
+		@Override
+		public View getView(int position, View childview, ViewGroup arg2) {
+			// TODO Auto-generated method stub
+			LayoutInflater inflater=(LayoutInflater)getSystemService(LAYOUT_INFLATER_SERVICE);
+			childview=inflater.inflate(R.layout.mylayout, null);
+			TextView tv=(TextView)childview.findViewById(R.id.textView1);
+			ImageView iv=(ImageView)childview.findViewById(R.id.imageView1);
+			tv.setText(name[position]);
+			iv.setImageResource(images[position]);
+			
+			
+			return childview;
+		}
+		
+	}
+	  
+	    
+	}
+
+Splash.java
+package com.example.kids;
+
+import android.media.MediaPlayer;
+import android.os.Bundle;
+import android.app.Activity;
+import android.content.Intent;
+import android.database.Cursor;
+import android.graphics.Typeface;
+import android.view.Menu;
+import android.view.View;
+import android.view.Window;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+public class Splash extends Activity {
+
+ImageView iv=null,iv2;
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		 requestWindowFeature(Window.FEATURE_NO_TITLE);
+		setContentView(R.layout.activity_splash);
+
+Animation a1=AnimationUtils.loadAnimation(this, R.anim.scfade);
+Animation a2=AnimationUtils.loadAnimation(this, R.anim.rotate);
+iv=(ImageView)findViewById(R.id.imageView1);
+iv.setAnimation(a2);
+MediaPlayer mp=MediaPlayer.create(this,R.raw.chime);
+mp.start();
+Typeface tf=Typeface.createFromAsset(getAssets(), "fonts/snap.TTF");
+TextView tx=(TextView)findViewById(R.id.textView1);
+tx.setTypeface(tf);
+tx.setAnimation(a1);
+TextView tx2=(TextView)findViewById(R.id.textView2);
+tx2.setTypeface(tf);
+tx2.setAnimation(a1);
+
+final DataBaseManager dm=new DataBaseManager(this);
+dm.openDb();
+
+new Thread(new Runnable(){
+	public void run()
+	{
+		try {
+			Thread.sleep(5000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		Cursor c=dm.select();
+		
+		if(c.moveToNext())
+			
+		{
+			
+			Intent i=new Intent(Splash.this,Front.class);
+		String name=c.getString(c.getColumnIndex(AppConstants.KIDNAME));
+		i.putExtra("name", name);
+		
+	startActivity(i);}
+		else
+		{
+			Intent i1=new Intent(Splash.this,Login.class);
+			
+			startActivity(i1);
+		}
+	}}).start();
+	
+}
+
+
+
+}
+ Story.java
+ package com.example.kids;
+
+import android.os.Bundle;
+import android.app.Activity;
+import android.content.Intent;
+import android.graphics.Typeface;
+import android.view.Menu;
+import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+public class Story extends Activity {
+ImageView iv,iv2;
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_story);
+		 Animation a1=AnimationUtils.loadAnimation(this, R.anim.bee);
+		 iv=(ImageView)findViewById(R.id.imageView1);
+		 iv.setAnimation(a1);
+		 Animation a2=AnimationUtils.loadAnimation(this, R.anim.bee2);
+		 iv2=(ImageView)findViewById(R.id.imageView2);
+		 iv2.setAnimation(a2);
+		Typeface tf=Typeface.createFromAsset(getAssets(), "fonts/snap.TTF");
+	       TextView tx2=(TextView)findViewById(R.id.textView2);
+	       tx2.setTypeface(tf);
+	}
+
+public void readstory(View v)
+{
+	Intent i=new Intent(this,ReadStory.class);
+	startActivity(i);
+}
+public void watchvideo(View v)
+{
+	Intent i=new Intent(this,WatchStory.class);
+	startActivity(i);
+}
+
+}
+video.java
+
+package com.example.kids;
+
+
+
+import android.net.Uri;
+import android.os.Bundle;
+import android.app.Activity;
+import android.content.Intent;
+import android.view.Menu;
+import android.view.View;
+import android.widget.MediaController;
+import android.widget.VideoView;
+
+public class Video extends Activity {
+
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_video);
+		Intent i=getIntent();
+		int position=i.getIntExtra("p",0);
+		int video[]={R.raw.the_thirsty_crow,R.raw.the_thirsty_crow,R.raw.the_thirsty_crow,R.raw.the_thirsty_crow,R.raw.the_thirsty_crow};
+		VideoView v1=(VideoView)findViewById(R.id.videoView1);
+		String path="android.resource://"+getPackageName()+"/"+video[position];
+		Uri u=Uri.parse(path);
+		v1.setVideoURI(u);
+		v1.setMediaController(new MediaController(this));
+		v1.start();
+	}
+
+}
+
